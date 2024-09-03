@@ -9,12 +9,20 @@ body {
 
 /* Container for job component */
 .job-container {
+  display: flex;
+  justify-content: space-between;
   width: 80%;
-  margin: 0 auto;
+  margin: 20px auto;
   padding: 20px;
   background-color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+}
+
+/* Job listing section */
+.job-list-section {
+  flex: 3;
+  padding-right: 20px;
 }
 
 /* Tabs for navigation */
@@ -29,124 +37,197 @@ body {
   padding: 10px;
   font-size: 16px;
   color: #ffffff;
-  background-color: #002f6c; /* UBS dark blue */
+  background-color: #002f6c; /* Primary color for active tab */
   border: none;
-  border-radius: 4px 4px 0 0;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.tabs button:hover {
-  background-color: #0056b3; /* UBS lighter blue */
+.tabs button.active {
+  background-color: #00509e; /* Darker shade for active tab */
 }
 
-.tabs .active {
-  background-color: #e30613; /* UBS red */
+.tabs button:hover {
+  background-color: #00509e;
 }
 
 /* Job list container */
 .job-list-container {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-/* Individual job list item */
+/* Each job listing */
 .job-list {
-  margin-bottom: 10px;
-  padding: 15px;
-  border-bottom: 1px solid #ddd;
-  background-color: #ffffff;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
   transition: background-color 0.3s ease;
 }
 
 .job-list:hover {
-  background-color: #f0f8ff; /* Light blue background on hover */
+  background-color: #e9e9e9;
 }
 
+/* Job card */
 .job-card {
+  display: flex;
+  align-items: center;
+}
+
+.job-name {
   display: flex;
   align-items: center;
   width: 100%;
 }
 
-.job-name img.job-profile {
+.job-profile {
   width: 50px;
   height: 50px;
-  border-radius: 50%;
   margin-right: 15px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
+/* Job details */
 .job-detail {
-  flex-grow: 1;
+  flex: 1;
 }
 
 .job-detail h4 {
   margin: 0;
-  font-size: 16px;
-  color: #002f6c; /* UBS dark blue */
+  font-size: 18px;
+  color: #333;
 }
 
 .job-detail h3 {
   margin: 5px 0;
-  font-size: 18px;
-  color: #333333;
+  font-size: 20px;
+  color: #00509e; /* Job position color */
 }
 
-.category p {
-  margin: 0;
+.category {
+  display: flex;
+  justify-content: space-between;
   font-size: 14px;
-  color: #666666;
+  color: #555;
 }
 
 .job-footer {
-  margin-left: auto;
-  text-align: right;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
 }
 
 .job-footer p {
-  font-size: 14px;
-  color: #999999;
   margin: 0;
+  font-size: 14px;
+  color: #777;
 }
 
 .job-footer button {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 20px;
-  color: #e30613; /* UBS red */
+  color: #00509e;
+  font-size: 18px;
   transition: color 0.3s ease;
 }
 
 .job-footer button:hover {
-  color: #002f6c; /* UBS dark blue */
+  color: #002f6c;
 }
 
-/* Filter section */
-input[type="search"] {
+/* Right section for filter and search */
+.filter-section {
+  flex: 1;
+  padding: 20px;
+  border-left: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+/* Search input style */
+.filter-section input[type="search"] {
   width: 100%;
   padding: 10px;
-  margin: 20px 0;
-  border: 1px solid #ddd;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 16px;
 }
 
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #002f6c; /* UBS dark blue */
-  color: #ffffff;
+/* Filter button */
+.filter-section button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #00509e;
+  color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #0056b3; /* UBS lighter blue */
+.filter-section button:hover {
+  background-color: #003f7d;
+}
+
+/* Navbar styles (add this to match navbar) */
+.navbar {
+  background-color: #00509e;
+  color: #ffffff;
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar a {
+  color: #ffffff;
+  text-decoration: none;
+  margin-right: 15px;
+  font-size: 16px;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .job-container {
+    flex-direction: column;
+    width: 95%;
+  }
+
+  .job-list-section,
+  .filter-section {
+    width: 100%;
+    padding: 0;
+  }
+
+  .filter-section {
+    border-left: none;
+    border-top: 1px solid #ddd;
+    margin-top: 20px;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  .tabs button {
+    margin-bottom: 10px;
+  }
 }
