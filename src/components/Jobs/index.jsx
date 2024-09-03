@@ -12,6 +12,8 @@ function Jobs() {
   const [active, setActive] = useState(false);
   const [searchterm, setSearchTerm] = useState("");
   const [currentTab, setCurrentTab] = useState("tab1");
+
+  const keyString = "Software Engineer"; // Hardcoded string to filter by
   const experience = [
     { min: 0, max: 2 },
     { min: 2, max: 5 },
@@ -24,32 +26,19 @@ function Jobs() {
       .then((data) => {
         const newData = data.map((item) => ({
           ...item,
-          mySubscription: true,
-          myPost: false,
+          mySubscription: item.position === keyString,
+          myPost: item.tags && item.tags.includes(keyString),
         }));
         setData(newData);
-        filterJobs(newData, searchterm);
+        setFilteredJobs(newData); // Show all jobs by default in Tab 1
+        setMySubscriptionJobs(newData.filter((item) => item.mySubscription)); // Jobs with keyString in position
+        setMyPostJobs(newData.filter((item) => item.myPost)); // Jobs with keyString in tags list
       });
   }, []);
-
-  const filterJobs = (jobs, searchString) => {
-    const byStringPair = jobs.filter(job => job.someKey === searchString);
-    const byListPair = jobs.filter(job => job.someListKey && job.someListKey.includes(searchString));
-
-    setFilteredJobs(byStringPair);
-    setMySubscriptionJobs(byListPair.filter((item) => item.mySubscription));
-    setMyPostJobs(byListPair.filter((item) => item.myPost));
-  };
 
   function saveClick(job) {
     window.localStorage.setItem("Job", JSON.stringify(job));
     setActive(true);
-  }
-
-  function handleJobFilter(event) {
-    const value = event.target.innerText;
-    event.preventDefault();
-    filterJobs(data, value);
   }
 
   function handleExperienceFilter(checkedState) {
@@ -71,7 +60,17 @@ function Jobs() {
   const searchEvent = (event) => {
     const searchValue = event.target.value;
     setSearchTerm(searchValue);
-    filterJobs(data, searchValue); // Filter based on search value
+    if (searchValue !== "") {
+      const filterData = data.filter((item) => {
+        return Object.values(item)
+          .join("")
+          .toLowerCase()
+          .includes(searchValue.toLowerCase());
+      });
+      setFilteredJobs(filterData);
+    } else {
+      setFilteredJobs(data);
+    }
   };
 
   return (
@@ -80,23 +79,22 @@ function Jobs() {
       <div className="job-container">
         <div className="tabs">
           <button
-            className={currentTab === "tab1" ?
-            "active" : ""}
+            className={currentTab === "tab1" ? "active" : ""}
             onClick={() => setCurrentTab("tab1")}
           >
-            Tab 1
+            All Jobs
           </button>
           <button
             className={currentTab === "tab2" ? "active" : ""}
             onClick={() => setCurrentTab("tab2")}
           >
-            My Subscription
+            My Subscription (Position)
           </button>
           <button
             className={currentTab === "tab3" ? "active" : ""}
             onClick={() => setCurrentTab("tab3")}
           >
-            My Post
+            My Post (Tags)
           </button>
         </div>
         <div className="job-list-container">
@@ -214,7 +212,6 @@ function Jobs() {
           onChange={searchEvent}
           placeholder="Search"
         />
-        <button onClick={handleJobFilter}>Filter by Job Role</button>
       </div>
     </div>
   );
