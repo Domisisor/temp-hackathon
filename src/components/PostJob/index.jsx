@@ -1,8 +1,25 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const techStackOptions = [
+  "React",
+  "Node.js",
+  "Angular",
+  "Vue.js",
+  "Python",
+  "Java",
+  "Ruby on Rails",
+  "Django",
+  "PHP",
+  "JavaScript",
+  "TypeScript",
+  "MySQL",
+  "PostgreSQL",
+  "MongoDB",
+];
 
 const PostJob = () => {
   const [company, setCompany] = useState("");
@@ -12,8 +29,19 @@ const PostJob = () => {
   const [experience, setExperience] = useState("");
   const [role, setRole] = useState("");
   const [location, setLocation] = useState("");
+  const [title, setTitle] = useState(""); 
+  const [description, setDescription] = useState(""); 
+  const [techStack, setTechStack] = useState([]); 
+  const [pointOfContact, setPointOfContact] = useState(""); 
+  const [requiredByDate, setRequiredByDate] = useState(""); 
+  const [landingPageData, setLandingPageData] = useState(null);
+  const [formCompleted, setFormCompleted] = useState(false); 
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(null); 
+  const [showDropdown, setShowDropdown] = useState(false); 
 
-const navigate=useNavigate();
+  const navigate = useNavigate();
+
   const getBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -22,6 +50,7 @@ const navigate=useNavigate();
       reader.readAsDataURL(file);
     });
   };
+
   const handleImg = (e) => {
     const file = e.target.files[0];
     getBase64(file).then((base64) => {
@@ -30,38 +59,110 @@ const navigate=useNavigate();
     });
   };
 
-  const handleSubmitButton = (e) => {
-      const jobPost = {
-        company,
-        position,
-        salary,
-        experience,
-        role,
-        location,
-        logo
-      };
+  const handleFormComplete = (e) => {
     e.preventDefault();
-    if (company === "") {
-      window.alert("Enter name");
-    } else if (position === "") {
-      window.alert("Enter position");
-    } else if (experience === "") {
-      window.alert("Enter Experience");
-    } else if (salary === "") window.alert("Enter Salary");
-    else {
-      let savedItem = [];
-      if (localStorage.getItem("item")) {
-        savedItem = JSON.parse(localStorage.getItem("item"));
-      }
-      localStorage.setItem("item", JSON.stringify([...savedItem, {jobPost}]));
+
+    if (
+      company === "" ||
+      position === "" ||
+      experience === "" ||
+      salary === "" ||
+      title === "" ||
+      description === "" ||
+      techStack.length === 0 ||
+      pointOfContact === "" ||
+      requiredByDate === ""
+    ) {
+      window.alert("Please fill all the required fields.");
+      return;
+    }
+
+    setFormCompleted(true);
+    fetchLandingPageData();
+  };
+
+  const handleFinalSubmit = async () => {
+    const jobPost = {
+      company,
+      position,
+      salary,
+      experience,
+      role,
+      location,
+      logo,
+      title, 
+      description, 
+      techStack, 
+      pointOfContact, 
+      requiredByDate, 
+    };
+
+    try {
+      const response = await axios.post("https://your-api-endpoint.com/jobs", jobPost);
       window.alert("Form Submitted Successfully");
       navigate("/Jobs");
+    } catch (error) {
+      console.error("Error submitting form data:", error);
+      window.alert("Failed to submit the form. Please try again.");
     }
   };
+
+  const fetchLandingPageData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("https://your-api-endpoint.com/landing-data");
+      setLandingPageData(response.data);
+    } catch (error) {
+      console.error("Error fetching landing page data:", error);
+      setError("Failed to load landing page data. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTechStackChange = (tech) => {
+    setTechStack((prevTechStack) =>
+      prevTechStack.includes(tech)
+        ? prevTechStack.filter((t) => t !== tech)
+        : [...prevTechStack, tech]
+    );
+  };
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (formCompleted) {
+    return (
+      <div>
+        <Navbar />
+        <div className="landing-page">
+          <h2>Landing Page Information</h2>
+          {landingPageData && (
+            <div>
+              <h3>Data from Backend:</h3>
+              <p>{landingPageData.message}</p>
+            </div>
+          )}
+          <button onClick={handleFinalSubmit} className="submit-button">
+            Proceed with Submission
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Navbar />
-
       <div className="job-background">
         <div className="title">
           <h2>Post a Job</h2>
@@ -69,16 +170,78 @@ const navigate=useNavigate();
       </div>
       <div className="container">
         <header className="header">
-          <h1 className="post-job">Fill the form </h1>
+          <h1 className="post-job">Fill the form</h1>
         </header>
         <form>
           <div className="form-group">
-            <label id="name-label" htmlFor="name">
-              Company Name
-            </label>
+            <label htmlFor="title">Job Title</label>
             <input
               type="text"
-              name="name"
+              name="title"
+              className="form-control"
+              placeholder="Enter Job Title"
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="description">Job Description</label>
+            <textarea
+              name="description"
+              className="form-control"
+              placeholder="Enter Job Description"
+              onChange={(e) => setDescription(e.target.value)}
+              required
+            ></textarea>
+          </div>
+          <div className="form-group">
+            <label htmlFor="techStack">Tech Stack</label>
+            <div className="dropdown-container">
+              <button type="button" className="dropdown-toggle" onClick={toggleDropdown}>
+                {techStack.length > 0 ? techStack.join(", ") : "Select Tech Stack"}
+              </button>
+              {showDropdown && (
+                <div className="dropdown-menu">
+                  {techStackOptions.map((tech) => (
+                    <label key={tech} className="dropdown-item">
+                      <input
+                        type="checkbox"
+                        checked={techStack.includes(tech)}
+                        onChange={() => handleTechStackChange(tech)}
+                      />
+                      {tech}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="pointOfContact">Point of Contact</label>
+            <input
+              type="text"
+              name="pointOfContact"
+              className="form-control"
+              placeholder="Enter Point of Contact"
+              onChange={(e) => setPointOfContact(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="requiredByDate">Required By Date</label>
+            <input
+              type="date"
+              name="requiredByDate"
+              className="form-control"
+              onChange={(e) => setRequiredByDate(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="company">Company Name</label>
+            <input
+              type="text"
+              name="company"
               className="form-control"
               placeholder="Enter Company Name"
               onChange={(e) => setCompany(e.target.value)}
@@ -86,128 +249,18 @@ const navigate=useNavigate();
             />
           </div>
           <div className="form-group">
-            <label id="name-label" htmlFor="name">
-              Enter Job Location
-            </label>
+            <label htmlFor="logo">Company Logo</label>
             <input
-              type="text"
-              name="name"
-              className="form-control"
-              placeholder="Enter Job Location"
-              onChange={(e) => setLocation(e.target.value)}
+              type="file"
+              id="logo"
+              name="logo"
+              onChange={handleImg}
               required
             />
           </div>
           <div className="form-group">
-            <label id="logo-label" htmlFor="logo">
-              Company logo
-            </label>
-            <label>
-              <input
-                type="file"
-                id="myFile"
-                name="filename"
-                onChange={handleImg}
-                required
-              />
-            </label>
-          </div>
-          <div className="form-group">
-            <label>What position are you posting for?</label>
-            <select
-              id="dropdown"
-              name="role"
-              className="form-control"
-              onChange={(e) => setPosition(e.target.value)}
-              required
-            >
-              <option disabled selected value>
-                Select position
-              </option>
-              <option>Frontend</option>
-              <option>Backend</option>
-              <option>Full Stack</option>
-              <option>Devops</option>
-              <option>Digital Marketing</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label id="name-label" htmlFor="name">
-              Enter Job Role
-            </label>
-            <input
-              type="text"
-              name="name"
-              className="form-control"
-              placeholder="Enter Job Role"
-              onChange={(e) => setRole(e.target.value)}
-              required
-            />
-          </div>
-
-          <div
-            className="form-group"
-            onChange={(e) => setExperience(e.target.value)}
-          >
-            <label>Experience </label>
-            <label>
-              <input
-                name="user-recommend"
-                value="0-1 Year"
-                type="radio"
-                className="input-radio"
-              />
-              0-1 Year
-            </label>
-            <label>
-              <input
-                name="user-recommend"
-                value=" 2-3 Years"
-                type="radio"
-                className="input-radio"
-              />
-              2-3 Years
-            </label>
-            <label>
-              <input
-                name="user-recommend"
-                value=" 4-5 Years"
-                type="radio"
-                className="input-radio"
-              />
-              4-5 Years
-            </label>
-            <label>
-              <input
-                name="user-recommend"
-                value="5+ Years"
-                type="radio"
-                className="input-radio"
-              />
-              5+ Years
-            </label>
-          </div>
-
-          <div className="form-group">
-            <label>Salary</label>
-            <select
-              className="form-control"
-              onChange={(e) => setSalary(e.target.value)}
-              required
-            >
-              <option disabled selected value>
-                Select Salary
-              </option>
-              <option value="0-15K">0-15K</option>
-              <option value="15-30K">15-30K</option>
-              <option value="30K-50K">30K-50K</option>
-              <option value="50K-80K">50K-80K</option>
-              <option value="80K+">80K+</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <button type="submit" className="submit-button" onClick={handleSubmitButton}>
-              Submit
+            <button type="button" className="submit-button" onClick={handleFormComplete}>
+              Proceed to Landing Page
             </button>
           </div>
         </form>
