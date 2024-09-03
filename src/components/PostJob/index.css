@@ -160,3 +160,38 @@
   align-items: center;
   gap: 30px;
 }
+
+
+/* Styling for the 'Select Tech Stack' button */
+.select-tech-stack-button {
+  padding: 10px 20px;
+  background-color: #002f6c; /* UBS dark blue for primary styling */
+  color: #ffffff; /* White text for contrast */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+/* Hover state for better user feedback */
+.select-tech-stack-button:hover {
+  background-color: #0056b3; /* Lighter blue on hover */
+  transform: translateY(-2px); /* Lift effect on hover */
+}
+
+/* Active state for click feedback */
+.select-tech-stack-button:active {
+  background-color: #003a8c; /* Darker blue when clicked */
+  transform: translateY(0); /* Reset the lift effect */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Reduced shadow on click */
+}
+
+/* Disabled state for when the button is not clickable */
+.select-tech-stack-button:disabled {
+  background-color: #cccccc; /* Greyed out look */
+  cursor: not-allowed; /* Change cursor to indicate non-clickable */
+  opacity: 0.7; /* Slight transparency for a disabled look */
+}

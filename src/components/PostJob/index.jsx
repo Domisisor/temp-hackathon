@@ -197,7 +197,7 @@ const PostJob = () => {
           <div className="form-group">
             <label htmlFor="techStack">Tech Stack</label>
             <div className="dropdown-container">
-              <button type="button" className="dropdown-toggle" onClick={toggleDropdown}>
+              <button type="button" className="select-tech-stack-button" onClick={toggleDropdown}>
                 {techStack.length > 0 ? techStack.join(", ") : "Select Tech Stack"}
               </button>
               {showDropdown && (
