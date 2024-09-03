@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Filter from "../Filter";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import './index.css'
+import './index.css';
 import Navbar from "../Navbar";
-
+import Filter from "../Filter";
 
 function Jobs() {
   const [data, setData] = useState([]);
@@ -30,11 +28,18 @@ function Jobs() {
           myPost: false,
         }));
         setData(newData);
-        setFilteredJobs(newData);
-        setMySubscriptionJobs(newData.filter((item) => item.mySubscription));
-        setMyPostJobs(newData.filter((item) => item.myPost));
+        filterJobs(newData, searchterm);
       });
   }, []);
+
+  const filterJobs = (jobs, searchString) => {
+    const byStringPair = jobs.filter(job => job.someKey === searchString);
+    const byListPair = jobs.filter(job => job.someListKey && job.someListKey.includes(searchString));
+
+    setFilteredJobs(byStringPair);
+    setMySubscriptionJobs(byListPair.filter((item) => item.mySubscription));
+    setMyPostJobs(byListPair.filter((item) => item.myPost));
+  };
 
   function saveClick(job) {
     window.localStorage.setItem("Job", JSON.stringify(job));
@@ -44,11 +49,7 @@ function Jobs() {
   function handleJobFilter(event) {
     const value = event.target.innerText;
     event.preventDefault();
-    setFilteredJobs(
-      data.filter((job) => {
-        return job.role === value;
-      })
-    );
+    filterJobs(data, value);
   }
 
   function handleExperienceFilter(checkedState) {
@@ -70,17 +71,7 @@ function Jobs() {
   const searchEvent = (event) => {
     const searchValue = event.target.value;
     setSearchTerm(searchValue);
-    if (searchValue !== "") {
-      const filterData = data.filter((item) => {
-        return Object.values(item)
-          .join("")
-          .toLowerCase()
-          .includes(searchValue.toLowerCase());
-      });
-      setFilteredJobs(filterData);
-    } else {
-      setFilteredJobs(data);
-    }
+    filterJobs(data, searchValue); // Filter based on search value
   };
 
   return (
@@ -89,7 +80,8 @@ function Jobs() {
       <div className="job-container">
         <div className="tabs">
           <button
-            className={currentTab === "tab1" ? "active" : ""}
+            className={currentTab === "tab1" ?
+            "active" : ""}
             onClick={() => setCurrentTab("tab1")}
           >
             Tab 1
@@ -110,44 +102,105 @@ function Jobs() {
         <div className="job-list-container">
           {currentTab === "tab1" ? (
             <div>
-              {/* content for tab 1 */}
-              {filteredJobs.map(({ id, logo, company, position, location, posted, role }) => {
-                return (
-                  <div className="job-list" key={id}>
-                    <div className="job-card">
-                      <div className="job-name">
-                        <img
-                          src={
-                            logo.length > 20
-                              ? logo
-                              : "https://www.ubs.com/etc/designs/fit/img/UBS_Logo_Semibold.svg"
-                          }
-                          alt="logo"
-                          className="job-profile"
-                        />
-                        <div className="job-detail">
-                          <h4>{company}</h4>
-                          <h3>{position}</h3>
-                          <div className="category">
-                            <p>{location}</p>
-                            <p>{role}</p>
-                          </div>
-                          <div className="job-footer">
-                            <p>{posted}</p>
-                            <button onClick={() => saveClick({ id, company, position, location, posted, role })}>
-                              {active ? <AiFillHeart /> : <AiOutlineHeart />}
-                            </button>
-                          </div>
+              {filteredJobs.map(({ id, logo, company, position, location, posted, role }) => (
+                <div className="job-list" key={id}>
+                  <div className="job-card">
+                    <div className="job-name">
+                      <img
+                        src={
+                          logo.length > 20
+                            ? logo
+                            : "https://www.ubs.com/etc/designs/fit/img/UBS_Logo_Semibold.svg"
+                        }
+                        alt="logo"
+                        className="job-profile"
+                      />
+                      <div className="job-detail">
+                        <h4>{company}</h4>
+                        <h3>{position}</h3>
+                        <div className="category">
+                          <p>{location}</p>
+                          <p>{role}</p>
+                        </div>
+                        <div className="job-footer">
+                          <p>{posted}</p>
+                          <button onClick={() => saveClick({ id, company, position, location, posted, role })}>
+                            {active ? <AiFillHeart /> : <AiOutlineHeart />}
+                          </button>
                         </div>
                       </div>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
+            </div>
+          ) : currentTab === "tab2" ? (
+            <div>
+              {mySubscriptionJobs.map(({ id, logo, company, position, location, posted, role }) => (
+                <div className="job-list" key={id}>
+                  <div className="job-card">
+                    <div className="job-name">
+                      <img
+                        src={
+                          logo.length > 20
+                            ? logo
+                            : "https://www.ubs.com/etc/designs/fit/img/UBS_Logo_Semibold.svg"
+                        }
+                        alt="logo"
+                        className="job-profile"
+                      />
+                      <div className="job-detail">
+                        <h4>{company}</h4>
+                        <h3>{position}</h3>
+                        <div className="category">
+                          <p>{location}</p>
+                          <p>{role}</p>
+                        </div>
+                        <div className="job-footer">
+                          <p>{posted}</p>
+                          <button onClick={() => saveClick({ id, company, position, location, posted, role })}>
+                            {active ? <AiFillHeart /> : <AiOutlineHeart />}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <div>
-              {/* content for other tabs */}
+              {myPostJobs.map(({ id, logo, company, position, location, posted, role }) => (
+                <div className="job-list" key={id}>
+                  <div className="job-card">
+                    <div className="job-name">
+                      <img
+                        src={
+                          logo.length > 20
+                            ? logo
+                            : "https://www.ubs.com/etc/designs/fit/img/UBS_Logo_Semibold.svg"
+                        }
+                        alt="logo"
+                        className="job-profile"
+                      />
+                      <div className="job-detail">
+                        <h4>{company}</h4>
+                        <h3>{position}</h3>
+                        <div className="category">
+                          <p>{location}</p>
+                          <p>{role}</p>
+                        </div>
+                        <div className="job-footer">
+                          <p>{posted}</p>
+                          <button onClick={() => saveClick({ id, company, position, location, posted, role })}>
+                            {active ? <AiFillHeart /> : <AiOutlineHeart />}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
