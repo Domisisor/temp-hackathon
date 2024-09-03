@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Filter from "./Filter";
+import Filter from "../Filter";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import './index.css'
 
 function Jobs() {
   const [data, setData] = useState([]);
