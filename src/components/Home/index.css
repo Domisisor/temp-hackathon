@@ -6,12 +6,12 @@
 }
 .title > h3 {
   text-align: center;
-  color: #fff;
+  color: #000000;
   font-weight: bold;
   margin-bottom: 20px;
 }
 span {
-  color: #f7cc53;
+  color: #f80808;
 }
 .button {
   text-align: center;
@@ -42,7 +42,7 @@ span {
   text-align: center;
 }
 .small-tagline p {
-  color: #fff;
+  color: #79005d;
   top: 50%;
   opacity: 0.7;
   margin-bottom: 30px;

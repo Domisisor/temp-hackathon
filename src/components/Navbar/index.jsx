@@ -8,7 +8,13 @@ const Navbar = () => {
       <div className="main-page">
         <nav id="navbar">
           <h1 className="logo">
-            Job<span>Hunt</span>
+            <img
+              src="https://www.ubs.com/etc/designs/fit/img/UBS_Logo_Semibold.svg" // Replace with your image URL
+              alt="UBS Hunt Logo"
+              className="logo-image"
+            />
+            {/* Optionally, you can add a span or text below the image if needed */}
+            <span className="logo-text">  Hunt</span>
           </h1>
 
           <ul>

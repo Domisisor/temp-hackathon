@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import Filter from "../Filter";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import './index.css'
+import Navbar from "../Navbar";
+
 
 function Jobs() {
   const [data, setData] = useState([]);
@@ -82,7 +84,8 @@ function Jobs() {
   };
 
   return (
-    <>
+    <div>
+      <Navbar/>
       <div className="job-container">
         <div className="tabs">
           <button
@@ -160,7 +163,7 @@ function Jobs() {
         />
         <button onClick={handleJobFilter}>Filter by Job Role</button>
       </div>
-    </>
+    </div>
   );
 }
 

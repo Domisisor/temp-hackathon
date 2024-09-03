@@ -10,12 +10,12 @@ const Home = () => {
       <div className="banner-img">
         <div className="title">
           <h3>
-            Find the <span>Right Job</span> In the
+            Find the <span>Right Talent</span> In 
             <br />
-            <span> Right Companies</span>
+            <span> UBS</span>
           </h3>
           <div className="small-tagline">
-            <p>Got fired..!! Get Ready to be hired</p>
+            <p>Got free time??? Get Ready for some action!!!</p>
           </div>
         </div>
         <div className="button" data-testid="btn">
