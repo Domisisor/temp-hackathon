@@ -204,6 +204,39 @@ body {
   text-decoration: underline;
 }
 
+
+.apply-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #e30613; /* UBS red */
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.apply-button:hover {
+  background-color: #c20510; /* Darker red on hover */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.apply-button:active {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.apply-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(227, 6, 19, 0.5); /* Focus ring */
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .job-container {
